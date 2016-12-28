@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/SAE_OneByOne.iml" filepath="$PROJECT_DIR$/.idea/SAE_OneByOne.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../SAE_OneForAll/.idea/SAE_OneForAll.iml" filepath="$PROJECT_DIR$/../SAE_OneForAll/.idea/SAE_OneForAll.iml" />
     </modules>
   </component>
 </project>
