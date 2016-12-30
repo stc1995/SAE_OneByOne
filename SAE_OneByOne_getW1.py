@@ -140,8 +140,8 @@ def loadDataset(num_patches, patch_side, tensor_num):
 
     ################################################################################################3
     ################################################################################################3
-    images = scipy.io.loadmat("d:/RecentlyUsed/Graduation Project/midData.mat")
-    images = images['midData']
+    images = scipy.io.loadmat("d:/RecentlyUsed/Graduation Project/oldData.mat")
+    images = images['oldData']
     ################################################################################################
     ################################################################################################
     """ Initialize dataset as array of zeros """
@@ -188,7 +188,8 @@ def executeSparseAutoEncoder():
 
     visible_size = vis_patch_side * vis_patch_side * vis_patch_side
     hidden_size = hid_patch_side * hid_patch_side * hid_patch_side
-    feature2 = numpy.zeros((example_num, hid_patch_side * hid_patch_side * hid_patch_side * num_patches))
+    W1 = numpy.zeros((example_num, hidden_size* visible_size))
+    b1 = numpy.zeros((example_num, hidden_size))
     for tensor_num in range(example_num):
         """ Load randomly sampled image patches as dataset """
         training_data = loadDataset(num_patches, vis_patch_side, tensor_num)
@@ -200,24 +201,16 @@ def executeSparseAutoEncoder():
                                                method="L-BFGS-B", jac=True, options={"maxiter": max_iterations,  'disp': True})  # , 'gtol': 1e-3
 
         opt_theta = opt_solution.x
-        opt_W1 = opt_theta[encoder.limit0: encoder.limit1].reshape(hidden_size, visible_size)
-        opt_b1 = opt_theta[encoder.limit2: encoder.limit3].reshape(hidden_size, 1)
+        opt_W1 = opt_theta[encoder.limit0: encoder.limit1].reshape(1, hidden_size*visible_size)
+        opt_b1 = opt_theta[encoder.limit2: encoder.limit3].reshape(1, hidden_size)
 
-        # opt_b1 = numpy.matrix(opt_b1).transpose()
-        feature = sigmoid(numpy.dot(opt_W1, training_data) + opt_b1)
-        feature = feature.transpose()
-        # print('feature')
-        # print(type(feature))
-        # print(feature.shape)
-
-        feature2[tensor_num, :] = feature[0: num_patches].reshape(1, hid_patch_side * hid_patch_side * hid_patch_side * num_patches)
-        # print('feature2')
-        # print(type(feature2))
-        # print(feature2.shape)
+        W1[tensor_num, :] = opt_W1
+        b1[tensor_num, :] = opt_b1
         print(tensor_num)
     ##############################################################################################
     ##############################################################################################
-    numpy.savetxt("mid_400_feature_125000.txt", feature2, fmt=['%s'] * feature2.shape[1], newline='\r\n')
+    numpy.savetxt("old_400_W1.txt", W1, fmt=['%s']*W1.shape[1], newline='\r\n')
+    numpy.savetxt("old_400_b1.txt", b1, fmt=['%s']*b1.shape[1], newline='\r\n')
     ##############################################################################################
     ##############################################################################################
 
